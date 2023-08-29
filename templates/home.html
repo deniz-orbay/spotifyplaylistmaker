@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Press to Make Playlist</title>
+</head>
+<body>
+    <nav class="top-nav">
+        <ul class="nav-list">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <p class="intro-text">Welcome to the Spotify Playlist Maker! Here you can organize your playlists by energy, mood, genre, length, and era.
+            These terms are used according to how Spotify describes in their API, which you can see <a href="https://developer.spotify.com/documentation/web-api/reference/get-audio-features">here</a>
+        </p>
+        <h2 class="start-text">Press here to start making playlist</h2>
+        <form action="/home" method="POST">
+            <button type="submit">Start</button>
+        </form>
+    </div>
+</body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        max-width: 500px;
+        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .intro-text {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .start-text {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    .top-nav {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        border-bottom: 4px solid #00cc00;
+    }
+
+    .nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .nav-list li {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    .nav-list li:last-child {
+        margin-right: 0;
+    }
+
+    .nav-list a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 16px;
+        transition: color 0.3s ease;
+    }
+
+    .nav-list a:hover {
+        color: #00cc00;
+    }
+</style>

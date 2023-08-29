@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact</title>
+</head>
+<body>
+    <nav class="top-nav">
+        <ul class="nav-list">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1>About Me</h1>
+        <p>Hi! My name is Deniz Orbay and I'm a junior at Vanderbilt University studying Computer Science and Mathematics. 
+            I made this website as a solution to a problem I was struggling with, 
+            which is being too indecisive to make playlists on my own. 
+            You can find my email and the link to the website's GitHub page below.</p>
+        <p>Email: deniz.orbay@vanderbilt.edu</p>
+        <p>GitHub: <a href="https://github.com/deniz-orbay">https://github.com/deniz-orbay</a></p>
+    </div>
+</body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .container {
+        max-width: 500px;
+        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .top-nav {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        border-bottom: 4px solid #00cc00;
+    }
+
+    .nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .nav-list li {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+    .nav-list li:last-child {
+        margin-right: 0;
+    }
+
+    .nav-list a {
+        text-decoration: none;
+        color: #fff;
+        font-size: 16px;
+        transition: color 0.3s ease;
+    }
+
+    .nav-list a:hover {
+        color: #00cc00;
+    }
+</style>
