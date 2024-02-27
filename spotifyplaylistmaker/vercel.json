@@ -12,5 +12,8 @@
       "dest": "app.py"
     }
   ],
-    "framework": null
+    "framework": null,
+    "rewrites": [
+        {"source": "/(.*)", "destination": "/"}
+    ]
 }
