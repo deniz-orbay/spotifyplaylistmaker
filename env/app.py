@@ -21,9 +21,10 @@ TOKEN_INFO = ''
 @app.route('/')
 def login():
     # create a SpotifyOAuth instance and get the authorization URL
-    auth_url = create_spotify_oauth().get_authorize_url()
+    """auth_url = create_spotify_oauth().get_authorize_url()
     # redirect the user to the authorization URL
-    return redirect(auth_url)
+    return redirect(auth_url)"""
+    return render_template('home.html')
 
 
 # route to handle the redirect URI after authorization
