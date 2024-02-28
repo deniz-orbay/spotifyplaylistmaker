@@ -495,6 +495,4 @@ def get_all_playlists(sp):
     return playlist_data
 
 
-    
-        
 
