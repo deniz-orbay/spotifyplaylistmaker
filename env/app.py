@@ -43,12 +43,10 @@ def redirect_page():
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-
     if request.method == "POST":
         return redirect('/playlistselection')
 
     return render_template('home.html')
-
 
 
 @app.route('/playlistselection', methods=['GET', 'POST'])
@@ -59,7 +57,7 @@ def playlist_selector():
         print('User not logged in')
         return redirect("/")
 
-    spotify = spotipy.Spotify(auth=token_info['access_token']) #make home page before this
+    spotify = spotipy.Spotify(auth=token_info['access_token'])  # make home page before this
     user_id = spotify.current_user()["id"]
     session["user"] = user_id
 
@@ -77,7 +75,6 @@ def playlist_selector():
 
             track_ids = [song["track"]["id"] for song in playlist_info["items"]]
 
-                        
             while len(track_ids) < total_songs:
                 offset += 20
                 playlist_info = spotify.current_user_saved_tracks(offset=offset)
@@ -92,44 +89,40 @@ def playlist_selector():
 
             track_ids = [song["track"]["id"] for song in playlist_info["items"]]
 
-                        
             while len(track_ids) < total_songs:
                 offset += 100
-                playlist_info = spotify.playlist_items(playlist_id=playlist_id, offset=offset, additional_types=('track',))
+                playlist_info = spotify.playlist_items(playlist_id=playlist_id, offset=offset,
+                                                       additional_types=('track',))
                 remaining = [song["track"]["id"] for song in playlist_info["items"]]
                 track_ids = track_ids + remaining
-            
+
         session["playlist"] = track_ids
         return redirect('/features')
-    
 
-    #save info in separate parts in session: for example session['playlist'] session['playlist2'] etc? maybe that would solve issue
+    # save info in separate parts in session: for example session['playlist'] session['playlist2'] etc? maybe that would solve issue
 
-    
-    #have animation between pages as if you're going downward (like vandyhacks application)
+    # have animation between pages as if you're going downward (like vandyhacks application)
 
     return render_template('playlist_selection.html', playlist_data=playlist_data)
 
 
-@app.route('/features',  methods=['GET', 'POST'])
+@app.route('/features', methods=['GET', 'POST'])
 def features():
-     
-     if request.method == 'POST':
-            
-            features = request.form.getlist('option') #add error message if nothing is selected
-            if not features:
-                return render_template('features.html')
-            features.append('result')
-            session['features'] = features
-            next = features.pop(0)
-            return redirect(f'/{next.lower()}')
-     
-     return render_template('features.html')
+    if request.method == 'POST':
+
+        features = request.form.getlist('option')  # add error message if nothing is selected
+        if not features:
+            return render_template('features.html')
+        features.append('result')
+        session['features'] = features
+        next = features.pop(0)
+        return redirect(f'/{next.lower()}')
+
+    return render_template('features.html')
 
 
 @app.route('/genre', methods=['GET', 'POST'])
 def genre():
-
     start = time.time()
 
     token_info = get_token()
@@ -137,7 +130,8 @@ def genre():
 
     playlist = session['playlist']
 
-    playlist_genres = {'indie': [], 'pop': [], 'rock': [], 'hip hop': []} #maybe add an input where they just can say 'indie' or 'hip hop'
+    playlist_genres = {'indie': [], 'pop': [], 'rock': [],
+                       'hip hop': []}  # maybe add an input where they just can say 'indie' or 'hip hop'
 
     for id in playlist:
 
@@ -147,45 +141,45 @@ def genre():
 
         artist_genres = spotify.artist(artist_id=artist_id)['genres']
 
-        for gnr in artist_genres: #redo all of this
+        for gnr in artist_genres:  # redo all of this
 
             checkers = {'indie': True, 'rock': True, 'pop': True, 'hip hop': True}
 
             if 'indie' in gnr and checkers['indie']:
                 playlist_genres['indie'].append(id)
-                checkers['rock'],checkers['hip hop'],checkers['pop'] = False, False, False
+                checkers['rock'], checkers['hip hop'], checkers['pop'] = False, False, False
 
             if 'rock' in gnr and checkers['rock']:
                 playlist_genres['rock'].append(id)
-                checkers['rock'],checkers['hip hop'],checkers['pop'] = False, False, False
+                checkers['rock'], checkers['hip hop'], checkers['pop'] = False, False, False
 
             if 'pop' in gnr and checkers['pop']:
                 playlist_genres['pop'].append(id)
-                checkers['rock'],checkers['hip hop'],checkers['pop'] = False, False, False
+                checkers['rock'], checkers['hip hop'], checkers['pop'] = False, False, False
 
             if 'hip hop' in gnr and checkers['hip hop']:
                 playlist_genres['hip hop'].append(id)
-                checkers['rock'],checkers['hip hop'],checkers['pop'] = False, False, False
+                checkers['rock'], checkers['hip hop'], checkers['pop'] = False, False, False
 
             if gnr in playlist_genres.keys():
                 playlist_genres[gnr].append(id)
             else:
                 playlist_genres[gnr] = [id]
 
-    #add a start over button that takes you to playlist page and cleans the session
-    
+    # add a start over button that takes you to playlist page and cleans the session
+
     if request.method == 'POST':
 
-            chosen_genres = request.form.getlist('genre')
-            final_playlist = []
-            for genre in chosen_genres:
-                final_playlist += playlist_genres[genre] #has duplicates, fix that
+        chosen_genres = request.form.getlist('genre')
+        final_playlist = []
+        for genre in chosen_genres:
+            final_playlist += playlist_genres[genre]  # has duplicates, fix that
 
-            session['playlist'] = final_playlist
+        session['playlist'] = final_playlist
 
-            features = session['features']
-            next = features.pop(0)
-            return redirect(f'/{next.lower()}')
+        features = session['features']
+        next = features.pop(0)
+        return redirect(f'/{next.lower()}')
 
     end = time.time()
 
@@ -196,15 +190,14 @@ def genre():
 
 @app.route('/length', methods=['GET', 'POST'])
 def length():
-
     token_info = get_token()
     spotify = spotipy.Spotify(auth=token_info['access_token'])
 
-    #maybe every page should have a search button where they can check on a certain song (like how long it is, what genre it is etc to
+    # maybe every page should have a search button where they can check on a certain song (like how long it is, what genre it is etc to
     # get a sense of it all) have them submit a song id, or a spotify.search ??
 
     if request.method == 'POST':
-            
+
         filtered_playlist = session['playlist']
         new_playlist = []
 
@@ -214,7 +207,7 @@ def length():
         for track in filtered_playlist:
             song = spotify.track(track_id=track)
 
-            duration = float(song['duration_ms']/1000/60)
+            duration = float(song['duration_ms'] / 1000 / 60)
             if more_less == 'longer than' and length <= duration:
                 new_playlist.append(song['id'])
             if more_less == 'shorter than' and length >= duration:
@@ -224,13 +217,12 @@ def length():
 
         features = session['features']
         next = features.pop(0)
-        return redirect(f'/{next.lower()}') #figure this out
-    
+        return redirect(f'/{next.lower()}')  # figure this out
 
-    #possible parameters: danceability, tempo, 
-    #loudness, instrumentalness, liveness (can return just live or non-live ones)
+    # possible parameters: danceability, tempo,
+    # loudness, instrumentalness, liveness (can return just live or non-live ones)
 
-    #should also explain the different audio features and maybe provide examples of famous songs
+    # should also explain the different audio features and maybe provide examples of famous songs
 
     return render_template('length.html')
 
@@ -276,7 +268,6 @@ def popularity():
 
 @app.route('/era', methods=['GET', 'POST'])
 def era():
-
     token_info = get_token()
     spotify = spotipy.Spotify(auth=token_info['access_token'])
 
@@ -301,23 +292,20 @@ def era():
         session['playlist'] = new_playlist
         features = session['features']
         next = features.pop(0)
-        return redirect(f'/{next.lower()}') #figure this out
-
+        return redirect(f'/{next.lower()}')  # figure this out
 
     return render_template('era.html')
 
 
-
 @app.route('/energy', methods=['GET', 'POST'])
 def energy():
-
     token_info = get_token()
     spotify = spotipy.Spotify(auth=token_info['access_token'])
 
     filtered_playlist = session['playlist']
     new_playlist = []
 
-    #if request.headers.get("Referer"): #figure out what happens when back button is pressed
+    # if request.headers.get("Referer"): #figure out what happens when back button is pressed
 
     if request.method == 'POST':
 
@@ -335,19 +323,18 @@ def energy():
 
         features = session['features']
         next = features.pop(0)
-        return redirect(f'/{next.lower()}') #figure this out
-    
+        return redirect(f'/{next.lower()}')  # figure this out
+
     return render_template('energy.html')
 
 
-@app.route('/mood', methods=['GET', 'POST']) 
+@app.route('/mood', methods=['GET', 'POST'])
 def mood():
-
     token_info = get_token()
     spotify = spotipy.Spotify(auth=token_info['access_token'])
 
     if request.method == 'POST':
-            
+
         filtered_playlist = session['playlist']
         new_playlist = []
 
@@ -366,16 +353,15 @@ def mood():
         features = session['features']
         next = features.pop(0)
         return redirect(f'/{next.lower()}')
-    
+
     return render_template('mood.html')
 
 
-#end of specific route
+# end of specific route
 
-#the similar songs route?
+# the similar songs route?
 @app.route('/similarsongs', methods=['GET', 'POST'])
 def similarsongs():
-
     session['similar songs'] = ''
 
     if request.method == 'POST':
@@ -383,11 +369,10 @@ def similarsongs():
         session['similar songs'] = similarsongs
         return redirect('/energy')
 
-
     return render_template('decade.html')
 
 
-@app.route('/result', methods = ['GET', 'POST'])
+@app.route('/result', methods=['GET', 'POST'])
 def result():
     token_info = get_token()
     spotify = spotipy.Spotify(auth=token_info['access_token'])
@@ -399,7 +384,7 @@ def result():
         if "restart" in request.form:
             session['playlist'] = []
             return redirect('/playlistselection')
-        
+
         elif "done" in request.form:
             new_playlist_id = spotify.user_playlist_create(user=session['user'], name="Your Sorted Playlist")["id"]
             spotify.playlist_add_items(playlist_id=new_playlist_id, items=final_playlist)
@@ -413,28 +398,24 @@ def result():
 
         for artist in song_info['artists'][:-1]:
             artist_name += artist['name'] + ', '
-        
+
         artist_name += song_info['artists'][-1]['name']
 
         songs.append(song_name + " - " + artist_name)
-
 
     return render_template('result.html', songs=songs)
 
 
 @app.route('/endpage', methods=['GET', 'POST'])
 def endpage():
-
     if request.method == 'POST':
         return redirect('/playlistselection')
-
 
     return render_template('endpage.html')
 
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-
     return render_template('contact.html')
 
 
@@ -474,14 +455,13 @@ def genre_list():
 
 
 def get_all_playlists(sp):
-
     playlist = sp.current_user_playlists(offset=0)
-    
+
     playlist_data = {"Liked Songs": "Liked Songs"}
-    
+
     for item in playlist["items"]:
         playlist_data[item["name"]] = item["id"]
-    
+
     ofst = 50
     remaining = sp.current_user_playlists(limit=50, offset=ofst)
 
@@ -491,8 +471,5 @@ def get_all_playlists(sp):
 
         ofst += 50
         remaining = sp.current_user_playlists(limit=50, offset=ofst)
-    
+
     return playlist_data
-
-
-
