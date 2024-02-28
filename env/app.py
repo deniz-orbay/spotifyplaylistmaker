@@ -38,7 +38,7 @@ def redirect_page():
     # save the token info in the session
     session[TOKEN_INFO] = token_info
     # redirect the user to the save_discover_weekly route
-    return redirect(url_for('home', _external=True))
+    return redirect('/home')
 
 
 @app.route('/home', methods=['GET', 'POST'])
